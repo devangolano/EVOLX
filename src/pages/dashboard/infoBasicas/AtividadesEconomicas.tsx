@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DashboardLayout } from '../../../Layout/DashboardLayout';
 
-export function ProfessionalsPage() {
+export function AtividadesEconomicas() {
   const navigate = useNavigate();
   const columns = [
     { key: 'sequential', header: 'Sequencial' },

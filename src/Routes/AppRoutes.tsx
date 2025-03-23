@@ -4,7 +4,8 @@ import { Login } from "../pages/auth/Login";
 import Dashboard from "../pages/dashboard/Index";
 import NotFound from "../pages/NotFound";
 import PrivateRoute from "./PrivateRoute";
-import { ProfessionalsPage } from "../pages/dashboard/infoBasicas/ProfessionalsPage";
+import { AtividadesEconomicas } from "../pages/dashboard/infoBasicas/AtividadesEconomicas";
+import { Bairros } from '../pages/dashboard/infoBasicas/Bairros';
 
 const AppRoutes: FC = () => {
   return (
@@ -22,7 +23,14 @@ const AppRoutes: FC = () => {
       <Route path="/dashboard/atividades-economicas"
         element={
           <PrivateRoute>
-            <ProfessionalsPage />
+            <AtividadesEconomicas />
+          </PrivateRoute> 
+        }
+      />
+      <Route path="/dashboard/bairros"
+        element={
+          <PrivateRoute>
+            <Bairros />
           </PrivateRoute> 
         }
       />
