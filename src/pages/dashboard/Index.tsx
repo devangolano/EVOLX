@@ -168,11 +168,11 @@ function Dashboard() {
                         px-4 py-2.5 cursor-pointer text-sm transition-all duration-150
                         flex items-center space-x-2
                         ${mapType === option.value 
-                          ? 'bg-blue-50/80 text-blue-600 font-medium' 
+                          ? 'bg-blue-50/80 text-orange-600 font-medium' 
                           : 'text-gray-700 hover:bg-gray-50/80'}
                       `}
                     >
-                      <div className={`w-2 h-2 rounded-full ${mapType === option.value ? 'bg-blue-500' : 'bg-gray-300'}`} />
+                      <div className={`w-2 h-2 rounded-full ${mapType === option.value ? 'bg-orange-500' : 'bg-gray-300'}`} />
                       <span>{option.label}</span>
                     </div>
                   ))}

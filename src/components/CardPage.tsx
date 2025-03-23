@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect  } from "react"
 import { FaChevronDown, FaChevronUp } from "react-icons/fa"
 import { FiX } from "react-icons/fi"
 import { BiChevronsLeft, BiChevronLeft, BiChevronRight, BiChevronsRight } from "react-icons/bi"
@@ -22,11 +22,32 @@ export function CardPage({ title, columns, data, showFilters = true, itemsPerPag
   const [currentPage, setCurrentPage] = useState(1)
   const [filtersVisible, setFiltersVisible] = useState(false)
   const [filterType, setFilterType] = useState("nome")
+  const [filterValue, setFilterValue] = useState("")
+  const [filteredData, setFilteredData] = useState(data)
 
-  const totalPages = Math.ceil(data.length / itemsPerPage)
+  // Reset to first page when filter changes
+useEffect(() => {
+    setCurrentPage(1);
+  }, [filteredData]);
+
+  const handleFilter = () => {
+    if (!filterValue.trim()) {
+      setFilteredData(data);
+      return;
+    }
+
+    const filtered = data.filter(item => {
+      const value = item[filterType]?.toString().toLowerCase() || '';
+      return value.includes(filterValue.toLowerCase());
+    });
+
+    setFilteredData(filtered);
+  };
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const currentData = data.slice(startIndex, endIndex)
+  const currentData = filteredData.slice(startIndex, endIndex)
 
   return (
     <div className="w-full flex flex-col border border-gray-200 rounded-lg overflow-hidden">
@@ -40,18 +61,18 @@ export function CardPage({ title, columns, data, showFilters = true, itemsPerPag
         )}
       </div>
 
-      {/* Filters */}
+      {/* Update the filter section */}
       {showFilters && (
         <div className="bg-gray-100 p-4 border-y border-gray-200">
           <button
-            className="text-[#0078c8] hover:text-[#005a99] flex items-center gap-2 font-medium"
+            className="text-orange-600 hover:text-orange-700 flex items-center gap-2 font-medium"
             onClick={() => setFiltersVisible(!filtersVisible)}
           >
-            <span className="text-[#0078c8]">EXIBIR FILTROS</span>
+            <span className="text-orange-500">EXIBIR FILTROS</span>
             {filtersVisible ? (
-              <FaChevronUp size={14} className="text-[#0078c8]" />
+              <FaChevronUp size={14} className="text-orange-500" />
             ) : (
-              <FaChevronDown size={14} className="text-[#0078c8]" />
+              <FaChevronDown size={14} className="text-orange-500" />
             )}
           </button>
 
@@ -61,12 +82,15 @@ export function CardPage({ title, columns, data, showFilters = true, itemsPerPag
                 <label className="block text-sm font-medium text-gray-700 mb-1">Tipo</label>
                 <div className="relative">
                   <select
-                    className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md appearance-none"
+                    className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm rounded-md appearance-none"
                     value={filterType}
                     onChange={(e) => setFilterType(e.target.value)}
                   >
-                    <option value="nome">nome</option>
-                    <option value="sequencial">Sequencial</option>
+                    {columns.map(column => (
+                      <option key={column.key} value={column.key}>
+                        {column.header}
+                      </option>
+                    ))}
                   </select>
                   <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                     <FaChevronDown size={12} className="text-gray-400" />
@@ -78,12 +102,17 @@ export function CardPage({ title, columns, data, showFilters = true, itemsPerPag
                 <label className="block text-sm font-medium text-gray-700 mb-1">Pesquisar</label>
                 <input
                   type="text"
+                  value={filterValue}
+                  onChange={(e) => setFilterValue(e.target.value)}
                   placeholder="Pesquisar"
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
                 />
               </div>
 
-              <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#0078c8] hover:bg-[#0069b4] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              <button 
+                onClick={handleFilter}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+              >
                 <FiFilter className="mr-2 h-5 w-5" />
                 Filtrar
               </button>
@@ -92,7 +121,7 @@ export function CardPage({ title, columns, data, showFilters = true, itemsPerPag
         </div>
       )}
 
-      {/* Table */}
+      {/* Update table to use filteredData */}
       <div className="overflow-x-auto flex-grow">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-100">
@@ -129,7 +158,7 @@ export function CardPage({ title, columns, data, showFilters = true, itemsPerPag
         </table>
       </div>
 
-      {/* Pagination */}
+      {/* Update pagination to use filteredData.length */}
       <div className="bg-gray-100 p-3 flex items-center justify-between border-t border-gray-200">
         <div className="flex items-center gap-2">
           <button
@@ -168,7 +197,7 @@ export function CardPage({ title, columns, data, showFilters = true, itemsPerPag
             <BiChevronsRight size={20} />
           </button>
         </div>
-        <div className="text-sm text-gray-700">Número de Registros: {data.length}</div>
+        <div className="text-sm text-gray-700">Número de Registros: {filteredData.length}</div>
       </div>
     </div>
   )
