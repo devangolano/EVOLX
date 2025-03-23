@@ -100,15 +100,27 @@ function Dashboard() {
           />
           
           {/* Botão para mostrar/ocultar as opções de mapa */}
+          {/* Map Type Selector */}
           <div className="absolute top-3 right-3 z-[1000]">
             <button
               onClick={() => setShowMapOptions(!showMapOptions)}
-              className="flex items-center justify-between w-full bg-white px-4 py-2 rounded-md shadow-md border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              className="flex items-center justify-between w-56 bg-white/90 backdrop-blur-sm px-4 py-2.5 rounded-lg shadow-lg border border-gray-200/50 text-sm font-medium text-gray-700 hover:bg-white/95 transition-all duration-200 group"
             >
-              <span>{getCurrentMapTypeName()}</span>
+              <div className="flex items-center">
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  className="h-4 w-4 mr-2 text-gray-500" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                </svg>
+                <span>{getCurrentMapTypeName()}</span>
+              </div>
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
-                className={`h-4 w-4 ml-2 transition-transform ${showMapOptions ? 'rotate-180' : ''}`} 
+                className={`h-4 w-4 text-gray-500 transition-transform duration-200 ${showMapOptions ? 'rotate-180' : ''}`} 
                 fill="none" 
                 viewBox="0 0 24 24" 
                 stroke="currentColor"
@@ -117,22 +129,23 @@ function Dashboard() {
               </svg>
             </button>
             
-            {/* Card de opções de mapa */}
             {showMapOptions && (
-              <div className="absolute top-full right-0 mt-1 bg-white rounded-md shadow-lg border border-gray-200 overflow-hidden w-48">
+              <div className="absolute top-full right-0 mt-2 bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-gray-200/50 overflow-hidden w-56 transform transition-all duration-200">
                 <div className="py-1">
                   {mapTypeOptions.map((option) => (
                     <div 
                       key={option.value}
                       onClick={() => handleMapTypeSelect(option.value)}
                       className={`
-                        px-4 py-2 cursor-pointer text-sm transition-colors
+                        px-4 py-2.5 cursor-pointer text-sm transition-all duration-150
+                        flex items-center space-x-2
                         ${mapType === option.value 
-                          ? 'bg-gray-100 text-gray-900 font-medium' 
-                          : 'text-gray-700 hover:bg-gray-50'}
+                          ? 'bg-blue-50/80 text-blue-600 font-medium' 
+                          : 'text-gray-700 hover:bg-gray-50/80'}
                       `}
                     >
-                      {option.label}
+                      <div className={`w-2 h-2 rounded-full ${mapType === option.value ? 'bg-blue-500' : 'bg-gray-300'}`} />
+                      <span>{option.label}</span>
                     </div>
                   ))}
                 </div>
