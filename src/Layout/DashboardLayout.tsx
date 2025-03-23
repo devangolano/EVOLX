@@ -160,7 +160,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             <img src="/Logo.png" alt="GeoEfficace" className="w-48" />
             <button 
               onClick={() => setIsSidebarOpen(false)} 
-              className="text-white hover:bg-[#0079b6] p-2 rounded-full transition-colors duration-200"
+              className="text-[#333333] font-bold hover:bg-[#0079b6] p-2 rounded-full transition-colors duration-200"
             >
               ✕
             </button>
@@ -231,7 +231,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <header className="bg-[#c4c3c3] p-4 border-b-2 border-orange-400 text-white flex justify-between items-center">
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="text-2xl"
+            className="text-2xl text-[#333333]"
           >
             <FaBars />
           </button>
