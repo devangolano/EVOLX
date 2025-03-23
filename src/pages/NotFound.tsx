@@ -4,12 +4,12 @@ function NotFound() {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col items-center justify-center h-full overflow-hidden bg-gray-100">
-      <div className="text-center px-4">
-        <img src="/Logo.png" alt="EVOLX" className="h-16 mb-6 mx-auto" />
-        <h1 className="text-5xl font-bold text-[#333333] mb-3">404</h1>
-        <h2 className="text-xl font-semibold text-[#333333] mb-3">Página não encontrada</h2>
-        <p className="text-gray-600 mb-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+      <div className="text-center">
+        <img src="/Logo.png" alt="EVOLX" className="h-20 mb-8 mx-auto" />
+        <h1 className="text-6xl font-bold text-[#333333] mb-4">404</h1>
+        <h2 className="text-2xl font-semibold text-[#333333] mb-4">Página não encontrada</h2>
+        <p className="text-gray-600 mb-8">
           A página que você está procurando ainda não existe, está em desenvolvimento.
         </p>
         <button
