@@ -235,14 +235,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main Content */}
       <div className="flex-1">
         {/* Header */}
-        <header className="bg-[#c4c3c3] p-4 border-b-2 border-orange-400 text-white flex justify-between items-center">
+        <header className="bg-[#c4c3c3] p-4 border-b-8 border-orange-400 text-white flex justify-between items-center">
           <button
             onClick={() => setIsSidebarOpen(true)}
             className="text-2xl text-[#333333]"
           >
             <FaBars />
           </button>
-          <img src="/Logo.png" alt="GeoEfficace" className="h-8" />
+          <img src="/Logo.png" alt="GeoEfficace" className="h-10" />
         </header>
 
         {/* Page Content */}

@@ -1,12 +1,14 @@
 import { DashboardLayout } from '../../Layout/DashboardLayout';
-import { MapContainer, TileLayer, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, ZoomControl, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useState, useEffect } from 'react';
 import L from 'leaflet';
+import { Loading } from '../../components/Loading';
 
 function Dashboard() {
   const [mapType, setMapType] = useState('satellite');
   const [showMapOptions, setShowMapOptions] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
   const brazilPosition: [number, number] = [-14.235004, -51.925280];
   const defaultZoom = 4;
@@ -77,9 +79,23 @@ function Dashboard() {
     return option ? option.label : '';
   };
 
+  // Add this component to handle map load
+  const MapLoader = () => {
+    const map = useMap();
+    
+    useEffect(() => {
+      map.whenReady(() => {
+        setIsLoading(false);
+      });
+    }, [map]);
+    
+    return null;
+  };
+
   return (
     <DashboardLayout>
-      <div className="relative w-full h-[calc(100vh-100px)] z-0"> {/* Added z-0 */}
+      {isLoading && <Loading />}
+      <div className="relative w-full h-[calc(100vh-100px)] z-0">
         <MapContainer 
           center={brazilPosition}
           zoom={defaultZoom}
@@ -91,6 +107,7 @@ function Dashboard() {
           minZoom={1}
           className="z-0"
         >
+          <MapLoader />
           <ZoomControl position="topleft" />
           <TileLayer
             url={getMapUrl(mapType)}
