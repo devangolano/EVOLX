@@ -155,7 +155,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Sidebar */}
       <div className={`fixed inset-y-0 left-0 z-30 w-72 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out flex flex-col shadow-xl`}>
         {/* Sidebar Header */}
-        <div className="bg-[#0088cc] p-6 flex-shrink-0">
+        <div className="bg-[#c4c3c3] p-6 flex-shrink-0">
           <div className="flex items-center justify-between mb-6">
             <img src="/Logo.png" alt="GeoEfficace" className="w-48" />
             <button 
@@ -165,7 +165,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               ✕
             </button>
           </div>
-          <div className="text-white text-sm font-medium px-2 py-1 bg-[#0079b6] rounded">
+          <div className="text-white text-sm font-medium px-2 py-1 bg-[#797878] rounded">
             Marcus ADM
           </div>
         </div>
@@ -228,7 +228,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main Content */}
       <div className="flex-1">
         {/* Header */}
-        <header className="bg-[#0088cc] p-4 border-b-2 border-orange-400 text-white flex justify-between items-center">
+        <header className="bg-[#c4c3c3] p-4 border-b-2 border-orange-400 text-white flex justify-between items-center">
           <button
             onClick={() => setIsSidebarOpen(true)}
             className="text-2xl"
