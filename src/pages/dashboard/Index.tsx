@@ -84,8 +84,15 @@ function Dashboard() {
     const map = useMap();
     
     useEffect(() => {
+      const startTime = Date.now();
+      
       map.whenReady(() => {
-        setIsLoading(false);
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, 1000 - elapsedTime);
+        
+        setTimeout(() => {
+          setIsLoading(false);
+        }, remainingTime);
       });
     }, [map]);
     

@@ -4,6 +4,7 @@ import { Login } from "../pages/auth/Login";
 import Dashboard from "../pages/dashboard/Index";
 import NotFound from "../pages/NotFound";
 import PrivateRoute from "./PrivateRoute";
+import { ProfessionalsPage } from "../pages/dashboard/infoBasicas/ProfessionalsPage";
 
 const AppRoutes: FC = () => {
   return (
@@ -16,6 +17,13 @@ const AppRoutes: FC = () => {
           <PrivateRoute>
             <Dashboard />
           </PrivateRoute>
+        }
+      />
+      <Route path="/dashboard/atividades-economicas"
+        element={
+          <PrivateRoute>
+            <ProfessionalsPage />
+          </PrivateRoute> 
         }
       />
       <Route path="*" element={<NotFound />} />
