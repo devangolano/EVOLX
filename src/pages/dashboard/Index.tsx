@@ -79,7 +79,7 @@ function Dashboard() {
 
   return (
     <DashboardLayout>
-      <div className="relative w-full h-[calc(100vh-100px)]">
+      <div className="relative w-full h-[calc(100vh-100px)] z-0"> {/* Added z-0 */}
         <MapContainer 
           center={brazilPosition}
           zoom={defaultZoom}
@@ -89,6 +89,7 @@ function Dashboard() {
           maxBounds={maxBounds}
           maxBoundsViscosity={1.0}
           minZoom={1}
+          className="z-0"
         >
           <ZoomControl position="topleft" />
           <TileLayer
@@ -99,9 +100,8 @@ function Dashboard() {
             noWrap={false}
           />
           
-          {/* Botão para mostrar/ocultar as opções de mapa */}
-          {/* Map Type Selector */}
-          <div className="absolute top-3 right-3 z-[1000]">
+          {/* Map Type Selector - Updated z-index */}
+          <div className="absolute top-3 right-3 z-[9999]"> {/* Increased z-index */}
             <button
               onClick={() => setShowMapOptions(!showMapOptions)}
               className="flex items-center justify-between w-56 bg-white/90 backdrop-blur-sm px-4 py-2.5 rounded-lg shadow-lg border border-gray-200/50 text-sm font-medium text-gray-700 hover:bg-white/95 transition-all duration-200 group"
