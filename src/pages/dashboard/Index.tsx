@@ -94,7 +94,11 @@ function Dashboard() {
 
   return (
     <DashboardLayout>
-      {isLoading && <Loading />}
+      {isLoading && (
+        <div className="absolute inset-0 z-[9999] bg-white/80 backdrop-blur-sm flex items-center justify-center">
+          <Loading />
+        </div>
+      )}
       <div className="relative w-full h-[calc(100vh-100px)] z-0">
         <MapContainer 
           center={brazilPosition}

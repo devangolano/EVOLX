@@ -7,7 +7,7 @@ import AppRoutes from './Routes/AppRoutes';
 const App: FC = () => {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gray-50">
+      <div className="h-screen overflow-hidden bg-gray-50">
         <AppRoutes />
         <Toaster 
           position="top-right"
