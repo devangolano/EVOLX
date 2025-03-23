@@ -228,7 +228,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main Content */}
       <div className="flex-1">
         {/* Header */}
-        <header className="bg-[#0088cc] p-4 text-white flex justify-between items-center">
+        <header className="bg-[#0088cc] p-4 border-b-2 border-orange-400 text-white flex justify-between items-center">
           <button
             onClick={() => setIsSidebarOpen(true)}
             className="text-2xl"
