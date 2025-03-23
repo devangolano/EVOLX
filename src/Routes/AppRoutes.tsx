@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { Login } from "../pages/auth/Login";
 import Dashboard from "../pages/dashboard/Index";
 import NotFound from "../pages/NotFound";
@@ -9,7 +9,7 @@ const AppRoutes: FC = () => {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Login />} />
+      <Route path="/" element={<Navigate to="/login" replace />} />
       <Route
         path="/dashboard"
         element={
