@@ -4,6 +4,7 @@ import { AiOutlineDown, AiOutlineRight } from "react-icons/ai";
 import { FiLogOut } from "react-icons/fi";  // Add this import
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { Modal } from '../components/Modal';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -12,16 +13,13 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [openMenus, setOpenMenus] = useState<number[]>([]);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Clear session storage
     sessionStorage.clear();
-    // Clear local storage if you're using it
     localStorage.clear();
-    // Show logout notification
-        toast.success('Sessão encerrada com sucesso!');
-    // Redirect to login page
+    toast.success('Sessão encerrada com sucesso!');
     navigate('/');
   };
 
@@ -214,13 +212,22 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             {/* Sair button */}
             <div className="mt-auto border-t border-gray-100">
               <button
-                onClick={handleLogout}
+                onClick={() => setIsLogoutModalOpen(true)}
                 className="flex items-center px-6 py-4 w-full text-left text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 font-medium"
               >
                 {menuItems[menuItems.length - 1].icon}
                 {menuItems[menuItems.length - 1].title}
               </button>
             </div>
+
+            {/* Add Modal component before closing divs */}
+            <Modal
+              isOpen={isLogoutModalOpen}
+              onClose={() => setIsLogoutModalOpen(false)}
+              onConfirm={handleLogout}
+              title="Confirmar Saída"
+              message="Tem certeza que deseja sair do sistema?"
+            />
           </div>
         </div>
       </div>
