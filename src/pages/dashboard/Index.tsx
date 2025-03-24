@@ -302,8 +302,13 @@ function Dashboard() {
         >
           <MapLoader />
           <CoordinatesTracker />
-          <ScaleControl position="bottomright" imperial={false} />
-          <AttributionControl position="bottomright" />
+          <ScaleControl 
+            position="bottomleft" 
+            imperial={false}
+            metric={true}
+            
+          />
+          <AttributionControl position="bottomright"  />
           <MeasurementTools />
           
           {mapType !== 'none' && (
@@ -379,27 +384,27 @@ function Dashboard() {
           </div>
           
           {/* Botão de Filtro */}
-          <div className="absolute top-3 left-3 z-[9999]">
+          <div className="absolute top-32 left-3 z-[9999]">
             <button
-              className="flex items-center justify-center w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/50 text-gray-700 hover:bg-white/95 transition-all duration-200"
+              className="flex items-center justify-center w-8 h-8 bg-white/90 backdrop-blur-sm rounded-sm shadow-lg border border-gray-200/50 text-gray-700 hover:bg-white/95 transition-all duration-200"
               title="Filtrar"
             >
               <FiFilter className="h-5 w-5" />
             </button>
           </div>
           
-          {/* Botão de Camadas - Posicionado abaixo da ferramenta de medição */}
-          <div className="absolute top-16 left-3 z-[9999]">
+          {/* Botão de Camadas */}
+          <div className="absolute top-[170px] left-3 z-[9999]">
             <button
               onClick={() => setShowLayerControl(!showLayerControl)}
-              className="flex items-center justify-center w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/50 text-gray-700 hover:bg-white/95 transition-all duration-200"
+              className="flex items-center justify-center w-8 h-8 bg-white/90 backdrop-blur-sm rounded-sm shadow-lg border border-gray-200/50 text-gray-700 hover:bg-white/95 transition-all duration-200"
               title="Camadas"
             >
               <FiLayers className="h-5 w-5" />
             </button>
             
             {showLayerControl && (
-              <div className="absolute top-full left-0 mt-2 bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-gray-200/50 overflow-hidden w-56 transform transition-all duration-200">
+              <div className="absolute left-12 top-0 bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-gray-200/50 overflow-hidden w-56 transform transition-all duration-200">
                 <div className="py-1">
                   <div className="px-4 py-2 text-sm font-medium text-gray-700 border-b border-gray-100">
                     Camadas
@@ -424,9 +429,9 @@ function Dashboard() {
             )}
           </div>
           
-          {/* Exibição de Coordenadas - Movido para o canto inferior direito */}
+          {/* Exibição de Coordenadas - Ajustado para ficar mais alto */}
           {coordinates && (
-            <div className="absolute bottom-16 right-3 z-[9999] bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-md border border-gray-200/50 text-xs font-mono text-gray-700">
+            <div className="absolute bottom-20 left-32 z-[9999] bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-none shadow-none border-none text-xs font-mono text-gray-700">
               {coordinates[0]}, {coordinates[1]}
             </div>
           )}
