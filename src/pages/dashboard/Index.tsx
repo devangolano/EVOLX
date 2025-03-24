@@ -1,5 +1,5 @@
 import { DashboardLayout } from '../../Layout/DashboardLayout';
-import { MapContainer, TileLayer, ZoomControl, useMap, ScaleControl, AttributionControl } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap, ScaleControl, AttributionControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
