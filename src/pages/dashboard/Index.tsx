@@ -1,39 +1,19 @@
 import { DashboardLayout } from '../../Layout/DashboardLayout';
-import { MapContainer, TileLayer, ZoomControl, useMap, ScaleControl } from 'react-leaflet';
+import { MapContainer, TileLayer, ZoomControl, useMap, ScaleControl, AttributionControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import 'leaflet-draw/dist/leaflet.draw.css';
 import { useState, useEffect, useRef } from 'react';
 import L from 'leaflet';
 import { Loading } from '../../components/Loading';
 // Importar react-icons
-import { FiMap, FiLayers, FiFilter, FiChevronDown } from 'react-icons/fi';
-
-// Importações necessárias para o Leaflet Draw
-import 'leaflet-draw';
-
-// Estender as definições de tipo para o Leaflet Draw
-declare module 'leaflet' {
-  namespace Control {
-    // @ts-ignore
-    class Draw extends L.Control {
-      constructor(options?: any);
-    }
-  }
-  
-  namespace Draw {
-    namespace Event {
-      const CREATED: string;
-    }
-  }
-}
+import { FiMap, FiFilter, FiChevronDown, FiLayers } from 'react-icons/fi';
 
 function Dashboard() {
   const [mapType, setMapType] = useState('satellite');
   const [showMapOptions, setShowMapOptions] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [coordinates, setCoordinates] = useState<[number, number] | null>(null);
   const [showLayerControl, setShowLayerControl] = useState(false);
   const [activeLayers, setActiveLayers] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [coordinates, setCoordinates] = useState<[number, number] | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   
   const brazilPosition: [number, number] = [-14.235004, -51.925280];
@@ -150,77 +130,6 @@ function Dashboard() {
           setIsLoading(false);
         }, 500);
       });
-    }, [map]);
-    
-    return null;
-  };
-
-  // Componente para adicionar ferramentas de desenho
-  const DrawTools = () => {
-    const map = useMap();
-    
-    useEffect(() => {
-      if (!map) return;
-      
-      // Criar um FeatureGroup para armazenar as camadas editáveis
-      const drawnItems = new L.FeatureGroup();
-      map.addLayer(drawnItems);
-      
-      // Inicializar o controle de desenho
-      // @ts-ignore
-      const drawControl = new L.Control.Draw({
-        position: 'topleft',
-        draw: {
-          polyline: {
-            shapeOptions: {
-              color: '#f357a1',
-              weight: 3
-            }
-          },
-          polygon: {
-            allowIntersection: false,
-            drawError: {
-              color: '#e1e100',
-              message: '<strong>Erro:</strong> Formas não podem se cruzar!'
-            },
-            shapeOptions: {
-              color: '#3388ff'
-            }
-          },
-          circle: {
-            shapeOptions: {
-              color: '#f357a1'
-            }
-          },
-          rectangle: {
-            shapeOptions: {
-              color: '#3388ff'
-            }
-          },
-          marker: true,
-          circlemarker: false
-        },
-        edit: {
-          featureGroup: drawnItems,
-          remove: true
-        }
-      });
-      
-      map.addControl(drawControl);
-      
-      // Evento para quando uma forma é criada
-      // @ts-ignore
-      map.on(L.Draw.Event.CREATED, (e: any) => {
-        const layer = e.layer;
-        drawnItems.addLayer(layer);
-      });
-      
-      return () => {
-        map.removeControl(drawControl);
-        map.removeLayer(drawnItems);
-        // @ts-ignore
-        map.off(L.Draw.Event.CREATED);
-      };
     }, [map]);
     
     return null;
@@ -383,18 +292,18 @@ function Dashboard() {
           center={brazilPosition}
           zoom={defaultZoom}
           style={mapStyles}
-          zoomControl={false}
+          zoomControl={true}
           worldCopyJump={true}
           maxBounds={maxBounds}
           maxBoundsViscosity={1.0}
           minZoom={1}
           className="z-0"
+          attributionControl={false}
         >
           <MapLoader />
           <CoordinatesTracker />
-          <ZoomControl position="topleft" />
-          <ScaleControl position="bottomleft" imperial={false} />
-          <DrawTools />
+          <ScaleControl position="bottomright" imperial={false} />
+          <AttributionControl position="bottomright" />
           <MeasurementTools />
           
           {mapType !== 'none' && (
@@ -469,8 +378,18 @@ function Dashboard() {
             )}
           </div>
           
-          {/* Botão de Camadas */}
-          <div className="absolute top-3 left-16 z-[9999]">
+          {/* Botão de Filtro */}
+          <div className="absolute top-3 left-3 z-[9999]">
+            <button
+              className="flex items-center justify-center w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/50 text-gray-700 hover:bg-white/95 transition-all duration-200"
+              title="Filtrar"
+            >
+              <FiFilter className="h-5 w-5" />
+            </button>
+          </div>
+          
+          {/* Botão de Camadas - Posicionado abaixo da ferramenta de medição */}
+          <div className="absolute top-16 left-3 z-[9999]">
             <button
               onClick={() => setShowLayerControl(!showLayerControl)}
               className="flex items-center justify-center w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/50 text-gray-700 hover:bg-white/95 transition-all duration-200"
@@ -505,19 +424,9 @@ function Dashboard() {
             )}
           </div>
           
-          {/* Botão de Filtro */}
-          <div className="absolute top-16 left-16 z-[9999]">
-            <button
-              className="flex items-center justify-center w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg border border-gray-200/50 text-gray-700 hover:bg-white/95 transition-all duration-200"
-              title="Filtrar"
-            >
-              <FiFilter className="h-5 w-5" />
-            </button>
-          </div>
-          
-          {/* Exibição de Coordenadas */}
+          {/* Exibição de Coordenadas - Movido para o canto inferior direito */}
           {coordinates && (
-            <div className="absolute bottom-8 left-2 z-[9999] bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-md border border-gray-200/50 text-xs font-mono text-gray-700">
+            <div className="absolute bottom-16 right-3 z-[9999] bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-md border border-gray-200/50 text-xs font-mono text-gray-700">
               {coordinates[0]}, {coordinates[1]}
             </div>
           )}
