@@ -13,7 +13,7 @@ function NotFound() {
           A página que você está procurando ainda não existe, está em desenvolvimento.
         </p>
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/dashboard')}
           className="bg-[#FF6B00] text-white px-6 py-2 rounded-md hover:bg-[#e66000] transition-colors duration-200 font-medium"
         >
           Voltar
