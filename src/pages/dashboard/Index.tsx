@@ -517,7 +517,7 @@ function Dashboard() {
           
           {/* Exibição de Coordenadas */}
           {coordinates && (
-            <div className="absolute bottom-3 left-3 z-[9999] bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-md border border-gray-200/50 text-xs font-mono text-gray-700">
+            <div className="absolute bottom-8 left-2 z-[9999] bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-md shadow-md border border-gray-200/50 text-xs font-mono text-gray-700">
               {coordinates[0]}, {coordinates[1]}
             </div>
           )}
