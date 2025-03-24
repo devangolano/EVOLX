@@ -30,7 +30,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       submenu: [
         { title: 'Atividades Econômicas', path: '/dashboard/atividades-economicas' },
         { title: 'Bairros', path: '/dashboard/bairros' },
-        { title: 'Cadastro de Pessoas', path: '/dashboard/people-registration' },
+        { title: 'Cadastro de Pessoas', path: '/dashboard/pessoas' },
         { title: 'Cadastro de Profissionais', path: '/dashboard/professional-registration' },
         { title: 'Classificação Pessoa Grupo', path: '/dashboard/person-group-classification' },
         { title: 'Classificação Pessoa', path: '/dashboard/person-classification' },

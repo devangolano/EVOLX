@@ -11,6 +11,7 @@ interface CardPageProps {
   columns: {
     key: string
     header: string
+    render?: (value: any, row: any) => React.ReactNode
   }[]
   data: any[]
   showFilters?: boolean
@@ -142,7 +143,7 @@ useEffect(() => {
                 <tr key={index} className="hover:bg-gray-50">
                   {columns.map((column) => (
                     <td key={column.key} className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                      {row[column.key]}
+                      {column.render ? column.render(row[column.key], row) : row[column.key]}
                     </td>
                   ))}
                 </tr>
