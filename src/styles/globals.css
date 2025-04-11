@@ -1,0 +1,8 @@
+/* Custom positioning for bottom controls */
+.leaflet-bottom {
+  bottom: 80px !important;
+}
+
+.leaflet-bottom .leaflet-control {
+  margin-bottom: 0;
+}
