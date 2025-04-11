@@ -33,8 +33,8 @@ interface Category {
 
 const CATEGORIES: Category[] = [
   {
-    id: 'horizontina-rs',
-    name: 'HORIZONTINA-RS',
+    id: 'iturama-mg',
+    name: 'ITURAMA-MG',
     isOpen: false,
     files: [],
     subcategories: [
