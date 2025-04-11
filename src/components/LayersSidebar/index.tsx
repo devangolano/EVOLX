@@ -39,25 +39,119 @@ const CATEGORIES: Category[] = [
     files: [],
     subcategories: [
       {
+        id: 'infraestrutura-basica',
+        name: 'INFRAESTRUTURA BÁSICA',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'setores-divisoes',
+        name: 'SETORES E DIVISÕES',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'transportes',
+        name: 'TRANSPORTES',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'educacao',
+        name: 'EDUCAÇÃO',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'saude',
+        name: 'SAÚDE',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'seguranca',
+        name: 'SEGURANÇA',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'comercio-servicos',
+        name: 'COMÉRCIO E SERVIÇOS',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'alimentacao-lazer',
+        name: 'ALIMENTAÇÃO E LAZER',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'areas-verdes',
+        name: 'ÁREAS VERDES',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'turismo-cultura',
+        name: 'TURISMO E CULTURA',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'industrias-agricultura',
+        name: 'INDÚSTRIAS E AGRICULTURA',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'habitacao',
+        name: 'HABITAÇÃO',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'saneamento-energia',
+        name: 'SANEAMENTO E ENERGIA',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'comunicacoes',
+        name: 'COMUNICAÇÕES',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'eventos-feiras',
+        name: 'EVENTOS E FEIRAS',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'obras-construcoes',
+        name: 'OBRAS E CONSTRUÇÕES',
+        isOpen: false,
+        files: []
+      },
+      {
         id: 'meio-ambiente',
         name: 'MEIO AMBIENTE',
         isOpen: false,
-        files: [],
-        subcategories: [
-          { id: 'arborizacao-urbana', name: 'Arborização Urbana', isOpen: false, files: [] },
-          { id: 'nascentes', name: 'Nascentes', isOpen: false, files: [] },
-          { id: 'cursos-dagua', name: 'Cursos D\'água', isOpen: false, files: [] },
-          { id: 'acudes', name: 'Açudes', isOpen: false, files: [] },
-        ]
+        files: []
       },
-      { id: 'energia', name: 'ENERGIA', isOpen: false, files: [] },
-      { id: 'transito', name: 'TRÂNSITO', isOpen: false, files: [] },
-      { id: 'topografia', name: 'TOPOGRAFIA', isOpen: false, files: [] },
-      { id: 'cadastro-agropecuario', name: 'CADASTRO AGROPECUÁRIO', isOpen: false, files: [] },
-      { id: 'cadastro-imobiliario', name: 'CADASTRO IMOBILIÁRIO', isOpen: false, files: [] },
-      { id: 'limites', name: 'LIMITES', isOpen: false, files: [] },
-      { id: 'leitura-agua', name: 'LEITURA ÁGUA', isOpen: false, files: [] },
-      { id: 'ortofotos', name: 'ORTOFOTOS', isOpen: false, files: [] },
+      {
+        id: 'iluminacao-publica',
+        name: 'ILUMINAÇÃO PÚBLICA',
+        isOpen: false,
+        files: []
+      },
+      {
+        id: 'uso-solo-urbano',
+        name: 'USO DO SOLO URBANO',
+        isOpen: false,
+        files: []
+      }
     ]
   }
 ];
@@ -87,15 +181,25 @@ const transformGeoJSON = (geojson: GeoJSON.FeatureCollection): GeoJSON.FeatureCo
 const getCategoryColor = (categoryId: string): string => {
   // Mapa de cores por categoria
   const colorMap: { [key: string]: string } = {
-    'MEIO AMBIENTE': '#3388ff', // azul
-    'ENERGIA': '#ff3333', // vermelho
-    'TRÂNSITO': '#33ff33', // verde
-    'TOPOGRAFIA': '#ff9933', // laranja
-    'CADASTRO AGROPECUÁRIO': '#9933ff', // roxo
-    'CADASTRO IMOBILIÁRIO': '#ff33ff', // rosa
-    'LIMITES': '#33ffff', // ciano
-    'LEITURA ÁGUA': '#ffff33', // amarelo
-    'ORTOFOTOS': '#666666', // cinza
+    'infraestrutura-basica': '#808080', // cinza
+    'setores-divisoes': '#FFD700', // amarelo dourado
+    'transportes': '#FF4500', // laranja avermelhado
+    'educacao': '#4169E1', // azul royal
+    'saude': '#FF0000', // vermelho
+    'seguranca': '#000080', // azul marinho
+    'comercio-servicos': '#32CD32', // verde lima
+    'alimentacao-lazer': '#FF1493', // rosa profundo
+    'areas-verdes': '#228B22', // verde floresta
+    'turismo-cultura': '#8B4513', // marrom sela
+    'industrias-agricultura': '#A0522D', // siena
+    'habitacao': '#FF8C00', // laranja escuro
+    'saneamento-energia': '#4682B4', // azul aço
+    'comunicacoes': '#9370DB', // roxo médio
+    'eventos-feiras': '#FF69B4', // rosa quente
+    'obras-construcoes': '#DAA520', // goldenrod
+    'meio-ambiente': '#006400', // verde escuro
+    'iluminacao-publica': '#FFD700', // amarelo
+    'uso-solo-urbano': '#8B008B', // magenta escuro
   };
   return colorMap[categoryId] || '#3388ff'; // azul como cor padrão
 };
