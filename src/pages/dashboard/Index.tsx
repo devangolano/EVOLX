@@ -148,71 +148,68 @@ function Dashboard() {
           map={mapRef.current}
         />}
         
-        <div className="flex-1">
-          <div className="relative h-full">
-            <div className="absolute inset-0" style={{ zIndex: 0 }}>
-              <MapContainer
-                center={brazilPosition}
-                zoom={defaultZoom}
-                style={mapStyles}
-                maxBounds={maxBounds}
-                minZoom={4}
-                maxZoom={18}
-                zoomControl={false}
-              >
-                {mapType !== 'none' && (
-                  <TileLayer
-                    url={getMapUrl(mapType)}
-                    subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
-                  />
-                )}
-                <ZoomControl position="topleft" />
-                <LayersControl />
-                <ScaleControl position="bottomright" imperial={false} />
-                <CoordinatesTracker />
-                <MapLoader />
-              </MapContainer>
-            </div>
-
-            <div className="absolute top-4 right-4" style={{ zIndex: 1100 }}>
-              <div className="relative">
-                <button
-                  className="bg-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2"
-                  onClick={() => setShowMapOptions(!showMapOptions)}
-                >
-                  <FiMap />
-                  <span>{getCurrentMapTypeName()}</span>
-                  <FiChevronDown className={`transform transition-transform ${showMapOptions ? 'rotate-180' : ''}`} />
-                </button>
-                
-                {showMapOptions && (
-                  <div className="absolute top-full right-0 mt-2 bg-white rounded-lg shadow-lg">
-                    {mapTypeOptions.map(option => (
-                      <button
-                        key={option.value}
-                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                        onClick={() => handleMapTypeSelect(option.value)}
-                      >
-                        {option.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {coordinates && (
-              <div className="absolute bottom-4 left-4 bg-white px-4 py-2 rounded-lg shadow-md" style={{ zIndex: 1100 }}>
-                Lat: {coordinates[0]}, Lng: {coordinates[1]}
-              </div>
-            )}
-
-            {isLoading && (
-              <div className="absolute inset-0 bg-white/80 flex items-center justify-center" style={{ zIndex: 2000 }}>
-                <Loading />
-              </div>
-            )}
+        <div className="flex-1 relative w-full">
+          <div className="absolute inset-0">
+            <MapContainer
+              center={coordinates || brazilPosition}
+              zoom={defaultZoom}
+              style={mapStyles}
+              maxBounds={maxBounds}
+              ref={mapRef}
+              zoomControl={false}
+            >
+              {mapType !== 'none' && (
+                <TileLayer
+                  url={getMapUrl(mapType)}
+                  subdomains={['mt0', 'mt1', 'mt2', 'mt3']}
+                />
+              )}
+              <ZoomControl position="topleft" />
+              <LayersControl />
+              <ScaleControl position="bottomright" imperial={false} />
+              <CoordinatesTracker />
+              <MapLoader />
+            </MapContainer>
           </div>
+
+          <div className="absolute top-4 right-4" style={{ zIndex: 1100 }}>
+            <div className="relative">
+              <button
+                className="bg-white px-4 py-2 rounded-lg shadow-md flex items-center gap-2"
+                onClick={() => setShowMapOptions(!showMapOptions)}
+              >
+                <FiMap />
+                <span>{getCurrentMapTypeName()}</span>
+                <FiChevronDown className={`transform transition-transform ${showMapOptions ? 'rotate-180' : ''}`} />
+              </button>
+              
+              {showMapOptions && (
+                <div className="absolute top-full right-0 mt-2 bg-white rounded-lg shadow-lg">
+                  {mapTypeOptions.map(option => (
+                    <button
+                      key={option.value}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      onClick={() => handleMapTypeSelect(option.value)}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {coordinates && (
+            <div className="absolute bottom-4 left-4 bg-white px-4 py-2 rounded-lg shadow-md" style={{ zIndex: 1100 }}>
+              Lat: {coordinates[0]}, Lng: {coordinates[1]}
+            </div>
+          )}
+
+          {isLoading && (
+            <div className="absolute inset-0 bg-white/80 flex items-center justify-center" style={{ zIndex: 2000 }}>
+              <Loading />
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>
