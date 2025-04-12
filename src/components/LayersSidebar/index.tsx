@@ -23,6 +23,11 @@ interface UploadedFile {
   visible: boolean;
   layer?: L.GeoJSON;
   markers?: L.LayerGroup;
+  statistics?: {
+    totalArea: number;
+    totalPerimeter: number;
+    featureCount: number;
+  };
 }
 
 interface Category {
@@ -38,6 +43,10 @@ interface LoteInfo {
   geometry?: any;
   category?: string;
   fileName?: string;
+  statistics?: {
+    area: number;
+    perimeter: number;
+  };
 }
 
 interface InfoSidebarProps {
@@ -198,6 +207,14 @@ const InfoSidebar: React.FC<InfoSidebarProps> = ({ lote, onClose, activeCategory
                           }
                         })()}
                       </td>
+                    </tr>
+                    <tr className="border-b">
+                      <td className="py-0.5 px-1 text-gray-700">Área</td>
+                      <td className="py-0.5 px-1 text-gray-900">{lote.statistics?.area || '-'}</td>
+                    </tr>
+                    <tr className="border-b last:border-0">
+                      <td className="py-0.5 px-1 text-gray-700">Perímetro</td>
+                      <td className="py-0.5 px-1 text-gray-900">{lote.statistics?.perimeter || '-'}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -361,25 +378,57 @@ const CATEGORIES: Category[] = [
 ];
 
 const transformCoordinates = (coordinates: number[], inverse = false): number[] => {
-  const [x, y] = coordinates;
-  const [transformedX, transformedY] = inverse 
-    ? proj4('EPSG:4326', 'EPSG:31982', [x, y]) 
-    : proj4('EPSG:31982', 'EPSG:4326', [x, y]);
-  return [transformedX, transformedY];
+  try {
+    if (!Array.isArray(coordinates) || coordinates.length < 2) {
+      console.error('Coordenadas inválidas:', coordinates);
+      return coordinates;
+    }
+
+    // EPSG:31982 -> EPSG:4326 (WGS84)
+    const result = inverse
+      ? proj4('EPSG:4326', 'EPSG:31982', coordinates)
+      : proj4('EPSG:31982', 'EPSG:4326', coordinates);
+
+    console.log('Transformação de coordenadas:', {
+      original: coordinates,
+      transformed: result
+    });
+
+    return result;
+  } catch (error) {
+    console.error('Erro ao transformar coordenadas:', error);
+    return coordinates;
+  }
 };
 
 const transformGeoJSON = (geojson: GeoJSON.FeatureCollection): GeoJSON.FeatureCollection => {
-  const transformed = JSON.parse(JSON.stringify(geojson));
-  
-  transformed.features.forEach((feature: GeoJSON.Feature) => {
-    if (feature.geometry.type === 'Polygon') {
-      feature.geometry.coordinates = feature.geometry.coordinates.map((ring: number[][]) =>
-        ring.map((coord: number[]) => transformCoordinates(coord))
-      );
-    }
-  });
+  try {
+    const transformed = JSON.parse(JSON.stringify(geojson)); // Deep clone
 
-  return transformed;
+    const transformFeature = (feature: any) => {
+      if (!feature.geometry) return feature;
+
+      const transformCoords = (coords: any): any => {
+        if (Array.isArray(coords) && typeof coords[0] === 'number') {
+          return transformCoordinates(coords);
+        }
+        return coords.map(transformCoords);
+      };
+
+      try {
+        feature.geometry.coordinates = transformCoords(feature.geometry.coordinates);
+      } catch (error) {
+        console.error('Erro ao transformar feature:', error, feature);
+      }
+      return feature;
+    };
+
+    transformed.features = transformed.features.map(transformFeature);
+    return transformed;
+  } catch (error) {
+    console.error('Erro ao transformar GeoJSON:', error);
+    return geojson;
+  }
 };
 
 const getCategoryColor = (categoryId: string): string => {
@@ -408,6 +457,80 @@ const getCategoryColor = (categoryId: string): string => {
   return colorMap[categoryId] || '#3388ff'; // azul como cor padrão
 };
 
+const calculateGeometryStats = (geometry: any): { area: number; perimeter: number } => {
+  if (!geometry || !geometry.coordinates) {
+    return { area: 0, perimeter: 0 };
+  }
+
+  let area = 0;
+  let perimeter = 0;
+
+  const calculatePolygonStats = (coords: number[][][]) => {
+    coords.forEach(ring => {
+      // Calcula o perímetro
+      for (let i = 0; i < ring.length - 1; i++) {
+        const p1 = ring[i];
+        const p2 = ring[i + 1];
+        const dx = p2[0] - p1[0];
+        const dy = p2[1] - p1[1];
+        perimeter += Math.sqrt(dx * dx + dy * dy);
+      }
+
+      // Calcula a área usando a fórmula do shoelace
+      let polygonArea = 0;
+      for (let i = 0; i < ring.length - 1; i++) {
+        polygonArea += ring[i][0] * ring[i + 1][1] - ring[i + 1][0] * ring[i][1];
+      }
+      area += Math.abs(polygonArea) / 2;
+    });
+  };
+
+  if (geometry.type === 'Polygon') {
+    calculatePolygonStats(geometry.coordinates);
+  } else if (geometry.type === 'MultiPolygon') {
+    geometry.coordinates.forEach((polygon: number[][][]) => calculatePolygonStats(polygon));
+  }
+
+  return { area, perimeter };
+};
+
+const validateGeoJSON = (geojson: any): boolean => {
+  try {
+    // Verificar se é um FeatureCollection
+    if (!geojson || geojson.type !== 'FeatureCollection') {
+      console.error('GeoJSON inválido: Deve ser um FeatureCollection');
+      return false;
+    }
+
+    // Verificar se tem features
+    if (!Array.isArray(geojson.features) || geojson.features.length === 0) {
+      console.error('GeoJSON inválido: Não contém features');
+      return false;
+    }
+
+    // Verificar cada feature
+    for (const feature of geojson.features) {
+      if (!feature.geometry || !feature.properties) {
+        console.error('Feature inválida: Sem geometria ou propriedades', feature);
+        return false;
+      }
+
+      // Verificar coordenadas
+      if (!feature.geometry.coordinates || !Array.isArray(feature.geometry.coordinates)) {
+        console.error('Geometria inválida: Sem coordenadas', feature.geometry);
+        return false;
+      }
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Erro ao validar GeoJSON:', error);
+    return false;
+  }
+};
+
+
+
 export const LayersSidebar: React.FC<LayersSidebarProps> = ({ isOpen, map }) => {
   const fileInputRefs = useRef<{ [key: string]: HTMLInputElement | null }>({});
   const [categories, setCategories] = useState<Category[]>(CATEGORIES);
@@ -428,30 +551,103 @@ export const LayersSidebar: React.FC<LayersSidebarProps> = ({ isOpen, map }) => 
 
       reader.onload = async (e) => {
         try {
-          const geojson = JSON.parse(e.target?.result as string) as GeoJSON.FeatureCollection;
-          if (geojson.type !== 'FeatureCollection') {
-            throw new Error('Arquivo inválido: Deve ser um GeoJSON FeatureCollection');
+          console.log('Iniciando processamento do arquivo:', file.name);
+          const content = e.target?.result as string;
+          
+          // Tentar fazer parse do JSON
+          let geojson;
+          try {
+            geojson = JSON.parse(content);
+          } catch (error) {
+            console.error('Erro ao fazer parse do JSON:', error);
+            throw new Error('Arquivo inválido: JSON mal formatado');
           }
+
+          // Validar estrutura do GeoJSON
+          if (!validateGeoJSON(geojson)) {
+            throw new Error('Arquivo GeoJSON inválido ou mal formatado');
+          }
+
+          console.log('GeoJSON válido, iniciando transformação de coordenadas');
+
+          // Verificar sistema de coordenadas
+          const crs = geojson.crs?.properties?.name;
+          console.log('Sistema de coordenadas detectado:', crs);
 
           const fileName = file.name.replace('.geojson', '');
           const color = getCategoryColor(categoryId);
-          
+
           // Transform coordinates from EPSG:31982 to EPSG:4326
+          console.log('Transformando coordenadas...');
           const transformedGeoJSON = transformGeoJSON(geojson);
+          console.log('Transformação concluída');
+
+          const totalArea = 0;
+          let totalPerimeter = 0;
+          const featureCount = transformedGeoJSON.features.length;
+
+          // Create a GeoJSON layer with custom style
+          const layer = L.geoJSON(transformedGeoJSON, {
+            style: (feature) => {
+              const stats = calculateGeometryStats(feature?.geometry);
+              totalPerimeter += stats.perimeter;
+              
+              return {
+                fillColor: color,
+                weight: 2,
+                opacity: 1,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 0.7
+              };
+            },
+            onEachFeature: (feature, layer) => {
+              const stats = calculateGeometryStats(feature.geometry);
+              
+              // Popup com informações básicas
+              const popupContent = `
+                <div class="text-sm">
+                  <p class="font-semibold">${feature.properties.Name || 'Sem nome'}</p>
+                  <p>Área: ${stats.area.toFixed(2)} m²</p>
+                  <p>Perímetro: ${stats.perimeter.toFixed(2)} m</p>
+                </div>
+              `;
+              layer.bindPopup(popupContent);
+
+              // Highlight no hover
+              layer.on({
+                mouseover: (e) => {
+                  const l = e.target;
+                  l.setStyle({
+                    fillOpacity: 0.9,
+                    weight: 3,
+                    dashArray: ''
+                  });
+                },
+                mouseout: (e) => {
+                  const l = e.target;
+                  l.setStyle({
+                    fillOpacity: 0.7,
+                    weight: 2,
+                    dashArray: '3'
+                  });
+                }
+              });
+            }
+          });
 
           // Create a marker cluster group
           const markers = (L as any).markerClusterGroup({
-            maxClusterRadius: 50, // Distância para agrupar os marcadores
-            spiderfyOnMaxZoom: true, // Espalha os marcadores quando dá zoom máximo
+            maxClusterRadius: 50,
+            spiderfyOnMaxZoom: true,
             showCoverageOnHover: false,
             zoomToBoundsOnClick: true,
             iconCreateFunction: function(cluster: any) {
               const count = cluster.getChildCount();
-              // Estilo do círculo vermelho com número
               return L.divIcon({
                 html: `
                   <div class="flex items-center justify-center rounded-full text-white font-medium" 
-                       style="width: 25px; height: 25px; background-color: #DC2626; box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.2);">
+                       style="width: 25px; height: 25px; background-color: ${color}; box-shadow: 0 0 0 4px ${color}33;">
                     ${count}
                   </div>`,
                 className: 'custom-cluster-icon',
@@ -499,11 +695,13 @@ export const LayersSidebar: React.FC<LayersSidebarProps> = ({ isOpen, map }) => 
 
               // Adicionar evento de clique para abrir o sidebar
               marker.on('click', () => {
+                const stats = calculateGeometryStats(feature.geometry);
                 handleMarkerClick({
                   properties: feature.properties,
                   geometry: feature.geometry,
                   category: categoryId,
-                  fileName: fileName
+                  fileName: fileName,
+                  statistics: stats
                 });
               });
 
@@ -514,15 +712,8 @@ export const LayersSidebar: React.FC<LayersSidebarProps> = ({ isOpen, map }) => 
           // Add the markers to the map
           markers.addTo(map);
 
-          // Create the polygon layer with style
-          const layer = L.geoJSON(transformedGeoJSON, {
-            style: {
-              color: color,
-              weight: 2,
-              opacity: 1,
-              fillOpacity: 0.2
-            }
-          }).addTo(map);
+          // Add the polygon layer to the map
+          layer.addTo(map);
 
           // Fit map to layer bounds
           const bounds = layer.getBounds();
@@ -551,7 +742,12 @@ export const LayersSidebar: React.FC<LayersSidebarProps> = ({ isOpen, map }) => 
                       data: geojson,
                       layer: layer,
                       markers: markers,
-                      visible: true
+                      visible: true,
+                      statistics: {
+                        totalArea,
+                        totalPerimeter,
+                        featureCount
+                      }
                     }]
                   };
                 }
