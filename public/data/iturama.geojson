@@ -1,0 +1,22 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Sample Plot",
+        "description": "Test plot in Iturama"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [711000, 7815000],
+          [711100, 7815000],
+          [711100, 7815100],
+          [711000, 7815100],
+          [711000, 7815000]
+        ]]
+      }
+    }
+  ]
+}
