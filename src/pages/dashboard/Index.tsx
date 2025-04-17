@@ -114,7 +114,7 @@ function Dashboard() {
             >
               {/* GeoJSON layer will be added here once we have the data */}
               <TileLayer
-                url="http://localhost:3000/api/tiles/{z}/{x}/{y}"
+                url="https://evolx-backend.onrender.com/api/tiles/{z}/{x}/{y}"
                 minZoom={12}
                 maxZoom={19}
                 tileSize={256}

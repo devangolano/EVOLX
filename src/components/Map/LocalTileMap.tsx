@@ -37,7 +37,7 @@ export const LocalTileMap = ({ className }: LocalTileMapProps) => {
   const [tifInfo, setTifInfo] = useState<TifInfo | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/tif-info')
+    fetch('https://evolx-backend.onrender.com/api/tif-info')
       .then(res => res.json())
       .then(info => {
         console.log('TIF Info:', info);
@@ -64,7 +64,7 @@ export const LocalTileMap = ({ className }: LocalTileMapProps) => {
       maxBoundsViscosity={0.5}
     >
       <TileLayer
-        url="http://localhost:3000/api/tiles/{z}/{x}/{y}"
+        url="https://evolx-backend.onrender.com/api/tiles/{z}/{x}/{y}"
         minZoom={MIN_ZOOM}
         maxZoom={MAX_ZOOM}
         attribution="Iturama 2019 Imagery"
